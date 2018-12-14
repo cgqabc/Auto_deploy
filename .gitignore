@@ -5,7 +5,11 @@ __pycache__/
 
 # C extensions
 *.so
+<<<<<<< HEAD
 .idea/
+=======
+
+>>>>>>> 243b6364488e3e386ee7cb252d209a2e4d807dbf
 # Distribution / packaging
 .Python
 build/

@@ -1,0 +1,8 @@
+---
+
+- name: Copy the scripts to remote host
+  copy: src=test.sh dest=/tmp/test.sh
+
+- name: Run the scripts
+  shell: /usr/bin/sh  /tmp/test.sh
+

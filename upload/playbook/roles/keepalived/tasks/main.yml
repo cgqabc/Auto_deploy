@@ -1,0 +1,29 @@
+---
+- name: Install the  packages in Redhat derivatives
+  yum: name={{ item }} state=installed
+  with_items:
+    - "{{ keepalived_pkgs }}"
+  when: ansible_os_family == 'RedHat'
+
+
+- name: Copy the conf file
+  template: src=keepalived.conf.j2 dest=/etc/keepalived/keepalived.conf
+  notify:
+   - restart keepalived
+
+
+
+- name: Start the keepalived services
+  service: name={{ keepalived_service }} state=started enabled=yes
+
+
+
+- name: copy script file 
+  copy: src={{ item }} dest=/etc/keepalived/ mode=0755
+  with_items: 
+    - chk_nginx.sh
+    - notify.sh
+
+
+
+

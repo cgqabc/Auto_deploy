@@ -1,0 +1,387 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    {% block title %}
+    {% endblock %}
+
+    <!--STYLESHEET-->
+    <!--=================================================-->
+    <link rel="icon" href="/static/favicon.ico">
+
+    <!--Bootstrap Stylesheet [ REQUIRED ]-->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+
+    <!--Nifty Premium Icon [ DEMONSTRATION ]-->
+    <link href="/static/css/nifty-demo-icons.min.css" rel="stylesheet">
+
+    <!--Nifty Stylesheet [ REQUIRED ]-->
+    <link href="/static/css/nifty.min.css" rel="stylesheet">
+
+    {#    <link rel="stylesheet"  href="/static/css/xcConfirm.css" />#}
+
+    <!-- Multiselect CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap-select.css"
+          type="text/css"/>
+
+
+    <!--JAVASCRIPT-->
+    <!--=================================================-->
+
+    <!--jQuery [ REQUIRED ]-->
+    <script src="/static/js/jquery-2.2.4.min.js"></script>
+
+
+    <!--BootstrapJS [ RECOMMENDED ]-->
+    <script src="/static/js/bootstrap.min.js"></script>
+    <!-- Multiselect JavaScript -->
+    <script src="/static/js/bootstrap-select.js"></script>
+
+    <!--NiftyJS [ RECOMMENDED ]-->
+    <script src="/static/js/nifty.min.js"></script>
+
+    <!--Themify Icons [ OPTIONAL ]-->
+    <link href="/static/css/themify-icons.min.css" rel="stylesheet">
+
+    <link href="/static/css/bootstrap-multiselect.css" rel="stylesheet">
+    <script src="/static/js/bootstrap-multiselect.js"></script>
+    <!--    弹窗开始样式 -->
+    <script src="/static/js/xcConfirm.js" type="text/javascript" charset="utf-8"></script>
+    <link rel="stylesheet" href="/static/css/xcConfirm.css"/>
+    <!--   csrf -->
+    <script src="/static/js/csrf.js"></script>
+
+    <style type="text/css">
+        pre {
+            overflow: auto;
+            white-space: normal;
+            white-space: pre-wrap; /* css-3 */
+            white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
+            white-space: -o-pre-wrap; /* Opera 7 */
+            word-wrap: break-word; /* Internet Explorer 5.5+ */
+            border: 1px solid #ccc;
+            padding: 5px;
+            margin: 10px;
+            font-family: Consolas, monospace;
+            color: #ADFF2F;
+            background-color: #000000;
+        }
+
+        .dropdown-menu {
+            max-height: 500px;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .html {
+            font-size: 13px;
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        }
+    </style>
+
+
+    {% block css-js %}
+    {% endblock %}
+
+
+</head>
+
+<body>
+
+<div id="container" class="effect aside-float aside-bright mainnav-lg">
+    <!--NAVBAR-->
+    <!--===================================================-->
+    <header id="navbar">
+        <div id="navbar-container" class="boxed">
+
+            <!--Brand logo & name-->
+            <!--================================-->
+            <div class="navbar-header">
+                <a href={% url 'index' %} class="navbar-brand">
+                    <img src="/static/picture/logo.png" alt="Nifty Logo" class="brand-icon">
+                    <div class="brand-title">
+                        <span class="brand-text">Auth_deploy</span>
+                    </div>
+                </a>
+            </div>
+            <!--================================-->
+            <!--End brand logo & name-->
+
+
+            <!--Navbar Dropdown-->
+            <!--================================-->
+            <div class="navbar-content clearfix">
+                <ul class="nav navbar-top-links pull-left">
+
+                    <!--Navigation toogle button-->
+                    <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+                    <li class="tgl-menu-btn">
+                        <a class="mainnav-toggle" href="#">
+                            <i class="demo-pli-view-list"></i>
+                        </a>
+                    </li>
+                    <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+                    <!--End Navigation toogle button-->
+
+
+                    <!--Notification dropdown-->
+                    <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+                    <li class="dropdown">
+                        <a href="#" data-toggle="dropdown" class="dropdown-toggle">
+                            <i class="demo-pli-bell"></i>
+                            <span class="badge badge-header badge-danger"></span>
+                        </a>
+
+                    </li>
+
+                </ul>
+                <ul class="nav navbar-top-links pull-right">
+
+
+                    <!--User dropdown-->
+                    <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+                    <li id="dropdown-user" class="dropdown">
+                        <a href="#" data-toggle="dropdown" class="dropdown-toggle text-right">
+                                <span class="pull-right">
+                                    <!--<img class="img-circle img-user media-object" src="picture/1.png" alt="Profile Picture">-->
+                                    <i class="demo-pli-male ic-user"></i>
+                                </span>
+                            <div class="username hidden-xs">{{ request.user.username }}</div>
+                        </a>
+
+
+                    </li>
+                    <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+                    <!--End user dropdown-->
+
+
+                </ul>
+            </div>
+            <!--================================-->
+            <!--End Navbar Dropdown-->
+
+        </div>
+    </header>
+    <!--===================================================-->
+    <!--END NAVBAR-->
+    <!--TIPS-->
+    <!--You may remove all ID or Class names which contain "demo-", they are only used for demonstration. -->
+
+
+    <div class="boxed">
+
+
+        <!--CONTENT CONTAINER-->
+        <!--===================================================-->
+        <div id="content-container">
+
+            <!--Page Title-->
+            <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+            <div id="page-title">
+                {% block page-title %}
+                {% endblock %}
+
+                <!--Searchbox-->
+                {#                <div class="searchbox">#}
+                {#                    <div class="input-group custom-search-form">#}
+                {#                        <input type="text" class="form-control" placeholder="Search..">#}
+                {#                        <span class="input-group-btn">#}
+                {#                                <button class="text-muted" type="button"><i class="demo-pli-magnifi-glass"></i></button>#}
+                {#                            </span>#}
+                {#                    </div>#}
+                {#                </div>#}
+            </div>
+            <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+            <!--End page title-->
+
+            <!--Page content-->
+            <!--===================================================-->
+            <div id="page-content">
+                {% block content %}
+                {% endblock %}
+                <!--===================================================-->
+                <!--End page content-->
+            </div>
+
+        </div>
+        <!--===================================================-->
+        <!--END CONTENT CONTAINER-->
+
+
+        <!--MAIN NAVIGATION-->
+        <!--===================================================-->
+        <nav id="mainnav-container">
+            <div id="mainnav">
+
+                <!--Menu-->
+                <!--================================-->
+                <div id="mainnav-menu-wrap">
+                    <div class="nano">
+                        <div class="nano-content">
+
+
+                            <ul id="mainnav-menu" class="list-group">
+
+                                <!--Category name-->
+                                <li class="list-header">主界面</li>
+
+                                <!--Menu list item-->
+                                <li class="active-link">
+                                    <a href={% url 'servers_list' %}>
+                                        <i class="demo-psi-home"></i>
+                                        <span class="menu-title">
+												<strong>服务器列表</strong>
+											</span>
+                                    </a>
+                                </li>
+
+                                <!--Menu list item-->
+                                <li>
+                                    <a href={% url "inventory" %}>
+                                        <i class="ti-server"></i>
+                                        <span class="menu-title">
+												<strong>动态资产管理</strong>
+											</span>
+                                        {#                                        <i class="arrow"></i>#}
+                                    </a>
+
+                                </li>
+                                <li>
+                                    <a href={% url "common_list" %}>
+                                        <i class="ti-star"></i>
+                                        <span class="menu-title">
+												<strong>常用快捷功能</strong>
+											</span>
+                                        {#                                        <i class="arrow"></i>#}
+                                    </a>
+
+
+                                </li>
+                                <li>
+                                    <a href={% url "model_run" %}>
+                                        <i class="ti-package"></i>
+                                        <span class="menu-title">
+												<strong>模块运行</strong>
+											</span>
+                                        {#                                        <i class="arrow"></i>#}
+                                    </a>
+
+                                </li>
+
+
+                                <!--Menu list item-->
+                                <li>
+                                    <a href={% url "scripts_list" %}>
+                                        <i class="ti-folder"></i>
+                                        <span class="menu-title">
+												<strong>脚本运行</strong>
+
+											</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href={% url "playbook_list" %}>
+                                        <i class="ti-book"></i>
+                                        <span class="menu-title">
+												<strong>PlayBook</strong>
+
+											</span>
+                                    </a>
+                                </li>
+
+
+                                <li>
+                                    <a href={% url "file_up" %}>
+                                        <i class="ti-cloud-up"></i>
+                                        <span class="menu-title">
+												<strong>文件分发</strong>
+
+											</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href={% url "file_down" %}>
+                                        <i class="ti-cloud-down"></i>
+                                        <span class="menu-title">
+												<strong>文件下载</strong>
+
+											</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href={% url "ansible_log" %}>
+                                        <i class="ti-comment"></i>
+                                        <span class="menu-title">
+												<strong>部署运行结果</strong>
+
+											</span>
+                                    </a>
+                                </li>
+
+                            </ul>
+
+
+                        </div>
+                    </div>
+                </div>
+                <!--================================-->
+                <!--End menu-->
+
+            </div>
+        </nav>
+        <!--===================================================-->
+        <!--END MAIN NAVIGATION-->
+
+    </div>
+
+
+    <!-- FOOTER -->
+    <!--===================================================-->
+    <footer id="footer">
+
+        <!-- Visible when footer positions are fixed -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <div class="show-fixed pull-right">
+            You have <a href="#" class="text-bold text-main"><span class="label label-danger">3</span> pending
+            action.</a>
+        </div>
+
+
+        <!-- Visible when footer positions are static -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <div class="hide-fixed pull-right pad-rgt">
+            Debug version.
+        </div>
+
+
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Remove the class "show-fixed" and "hide-fixed" to make the content always appears. -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+        <p class="pad-lft">&#0169; 2018 SimpleOps</p>
+
+
+    </footer>
+    <!--===================================================-->
+    <!-- END FOOTER -->
+
+
+    <!-- SCROLL PAGE BUTTON -->
+    <!--===================================================-->
+    <button class="scroll-top btn">
+        <i class="pci-chevron chevron-up"></i>
+    </button>
+    <!--===================================================-->
+
+
+</div>
+<!--===================================================-->
+<!-- END OF CONTAINER -->
+
+
+</body>
+</html>

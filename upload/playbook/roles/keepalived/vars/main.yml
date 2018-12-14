@@ -1,0 +1,4 @@
+---
+keepalived_pkgs:
+  - keepalived
+  - ipvsadm

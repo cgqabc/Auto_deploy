@@ -1,0 +1,6 @@
+---
+
+vs_port: 8080
+vs_address: 192.168.0.88
+vs_brd: 192.168.0.255
+keepalived_service: keepalived

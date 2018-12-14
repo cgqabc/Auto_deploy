@@ -1,0 +1,12 @@
+---
+- name: Install program
+  hosts: "{{host}}"
+  #remote_user: "{{user}}"
+  # remote_user: user
+  # become: yes
+  # become_method: sudo
+  
+  roles:
+    - common
+ #   - "{{role_name}}"
+

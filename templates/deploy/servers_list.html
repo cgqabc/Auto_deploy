@@ -1,0 +1,197 @@
+{% extends 'base.html' %}
+
+
+
+
+{% block css-js %}
+
+    <!--DataTables [ OPTIONAL ]-->
+    <link href="/static/css/datatables.bootstrap.css" rel="stylesheet">
+    <link href="/static/css/datatables.responsive.css" rel="stylesheet">
+    <!--FooTable [ OPTIONAL ]-->
+    <link href="/static/css/footable.core.css" rel="stylesheet">
+
+    <script src="/static/js/jquery.datatables.js"></script>
+    <script src="/static/js/datatables.bootstrap.js"></script>
+    <script src="/static/js/datatables.responsive.min.js"></script>
+    <!--DataTables Sample [ SAMPLE ]-->
+    <script src="/static/js/tables-datatables.js"></script>
+    <!--FooTable [ OPTIONAL ]-->
+    <script src="/static/js/footable.all.min.js"></script>
+
+    <!--FooTable Example [ SAMPLE ]-->
+    <script src="/static/js/tables-footable.js"></script>
+    <link href="/static/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
+    <script src="/static/js/fileinput.js" type="text/javascript"></script>
+
+{% endblock %}
+
+
+
+{% block content %}
+{% if message %}
+                  <div class="alert alert-warning">{{ message }}</div>
+              {% endif %}
+    <div class="panel">
+        <div class="panel-heading">
+            <h3 class="panel-title">服务器列表</h3>
+        </div>
+        <div class="row">
+            <div class="col-sm-4">
+                <li class="pull-left btn">
+                    <a href="{% url 'server_add' %}" class="btn btn-success btn-bock">
+                        <b>新增服务器</b>
+                    </a>
+                </li>
+            </div>
+            <div class="col-sm-8">
+{#                <form method="post" enctype="multipart/form-data" id="assets_form">#}
+                <form method="post" enctype="multipart/form-data" id="assets_form" action={% url "asset_batch_import" %}>
+                    {% csrf_token %}
+
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <div class="col-ms-10" style="margin-left: 10px;margin-top: 8px;">
+                                <input type="file" name="batch_import"
+                                       id="file_upload">
+                            </div>
+                        </div>
+
+                        <div class="col-sm-4">
+                        <li class="btn ">
+{#                            <button id="batch_import" class="btn btn-success">#}
+                            <button type="submit" class="btn btn-success">
+                                <b>批量导入</b>
+                            </button>
+                        </li>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <br>
+        <br>
+        <div class="panel-body">
+            <label class="form-inline">Show
+                <select id="demo-show-entries" class="form-control input-sm">
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="15">15</option>
+                    <option value="20">20</option>
+                </select>
+                entries
+            </label>
+            <table id="demo-foo-pagination" class="table toggle-arrow-tiny" data-page-size="5">
+                <thead>
+                <tr>
+                    <th data-toggle="true">序号</th>
+                    <th>名称</th>
+                    <th>项目</th>
+                    <th>服务</th>
+                    <th>IP</th>
+                    <th>配置</th>
+                    <th>操作</th>
+                    <th data-hide="all">用户名</th>
+                    <th data-hide="all">主机名</th>
+                    <th data-hide="all">主机变量</th>
+                    <th data-hide="all">端口</th>
+                    <th data-hide="all">宿主机</th>
+                    <th data-hide="all">硬盘大小</th>
+                    <th data-hide="all">操作系统</th>
+                    <th data-hide="all">分组</th>
+                    <th data-hide="all">位置</th>
+                    <th data-hide="all">备注</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for data in data_list %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+
+                        <td>{{ data.name }}</td>
+                        <td>{{ data.project }}</td>
+                        <td>{{ data.service }}</td>
+                        <td>{{ data.ip }}</td>
+                        <td>{{ data.cpu_rpm }}</td>
+                        <td class="text-center" data-editable='false'>
+                            <a href="{% url 'webssh' data.id %}" class="btn btn-sm btn-info">webssh</a>
+                            <a href="{% url 'server_edit' data.id %}" class="btn btn-sm btn-info">编辑</a>
+
+                            <a href="{% url 'server_del' data.id %}" class="btn btn-sm btn-danger user_del"
+                               onclick="return confirm('确认删除？')">删除</a>
+                        </td>
+                        <td>{{ data.username }}</td>
+                        <td>{{ data.hostname }}</td>
+                        <td>{{ data.host_vars }}</td>
+                        <td>{{ data.port }}</td>
+                        <td>{{ data.hosted_on }}</td>
+                        <td>{{ data.disk_total }}</td>
+                        <td>{{ data.os_type }}</td>
+                        <td>{{ data.server }}</td>
+                        <td>{{ data.group }}</td>
+                        <td>{{ data.site }}</td>
+                        <td>{{ data.memo }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>没有数据！</tr>
+                {% endfor %}
+
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td colspan="5">
+                        <div class="text-right">
+                            <ul class="pagination"></ul>
+                        </div>
+                    </td>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+    {#<script src="/static/js/csrf.js"></script>#}
+    <script>
+        {#$('#batch_import').click(function () {#}
+        {#    $.ajax({#}
+                {#dataType: "JSON",#}
+        {#        url: '/deploy/asset_batch_import/', //请求地址#}
+        {#        type: "POST",  //提交类似#}
+        {#        cache: false, //上传文件不需要缓存。#}
+        {#        processData: false, //因为data值是FormData对象，不需要对数据做处理#}
+        {#        contentType: false,  //因为是由<form>表单构造的FormData对象，且已经声明了属性enctype="multipart/form-data"，所以这里设置为false#}
+        {#        data: new FormData($('#assets_form')[0]),#}
+        {#        success: function (response) {#}
+        {#            if (response["code"] == "200") {#}
+        {#                alert("ok");#}
+        {#                window.wxc.xcConfirm(response["msg"], window.wxc.xcConfirm.typeEnum.success);#}
+        {#            }#}
+        {#            else {#}
+        {#                alert("faile:"+response["msg"]);#}
+        {#                window.wxc.xcConfirm(response["msg"], window.wxc.xcConfirm.typeEnum.error);#}
+        {#            }#}
+        {#        },#}
+        {#        error: function (response) {#}
+        {#            alert("error:"+response["msg"]);#}
+        {#            window.wxc.xcConfirm("导入失败：" + response["msg"], window.wxc.xcConfirm.typeEnum.error);#}
+        {#        }#}
+        {#    })#}
+        {#});#}
+        $("#file_upload").fileinput({
+            language: 'zh',
+            showUpload: false,
+            uploadUrl: '#', // you must set a valid URL here else you will get an error
+            {#allowedFileExtensions: [".yml", ".yaml"],#}
+            previewFileType: "pdf",
+            {#allowedFileTypes: ["text"],#}
+            overwriteInitial: false,
+            maxFileSize: 2000,
+            maxFilesNum: 10,
+            dropZoneEnabled: false,
+            slugCallback: function (filename) {
+                return filename.replace('(', '_').replace(']', '_');
+            }
+        });
+    </script>
+
+{% endblock %}

@@ -2,4 +2,4 @@ Django==1.11.15
 redis==2.10.6
 six==1.11.0
 xlrd==1.1.0
-ansible==2.3.3
+ansible>=2.4.5

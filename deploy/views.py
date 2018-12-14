@@ -1,23 +1,25 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import glob
 import json
 import uuid
 
-import os,glob
+import os
 import xlrd
 from django.contrib.auth.decorators import login_required
 from django.forms.models import model_to_dict
-from django.http import JsonResponse,StreamingHttpResponse,FileResponse
+from django.http import JsonResponse, StreamingHttpResponse, FileResponse
 from django.shortcuts import render
 
-from .ansible_api_v2 import ANSRunner
+from .ansible_api_v2_4 import ANSRunner
 from .assets_query import AssetsSource
-from .forms import InventoryForm, GroupForm, MoudelForm, ScriptsForm, PlaybookForm, ServersForm,FileDownForm,FileUpForm,CommonForm
+from .forms import InventoryForm, GroupForm, MoudelForm, ScriptsForm, PlaybookForm, ServersForm, FileDownForm, \
+    FileUpForm, CommonForm
 from .log_ansible import AnsibleRecord
 from .models import (Ansible_Inventory, Ansible_Group, Ansible_Server, Servers,
                      Ansible_Script, Ansible_Playbook, Log_Ansible_Playbook,
-                     Log_Ansible_Model, Projects, Services, Groups,LogFileOps,CommonMethods)
+                     Log_Ansible_Model, Projects, Services, Groups, LogFileOps, CommonMethods)
 # from delivery.models import Project_Config,Project_Number,BusinessUnit
 # from cmdb.models import Server_asset,Service_Assets
 # from django.contrib.auth.models import Group
@@ -40,7 +42,7 @@ def asset_batch_import(request):
                 for chunk in fileobj.chunks():
                     f.write(chunk)
         except Exception as e:
-            print e
+            print(e)
 
         file = xlrd.open_workbook(filename)
         server = file.sheet_by_name("server")
@@ -89,6 +91,7 @@ def asset_batch_import(request):
         data_list = Servers.objects.all()
         message = "导入成功"
         return render(request, "deploy/servers_list.html", locals())
+
 
 @login_required
 def servers_list(request):
@@ -227,10 +230,11 @@ def common_del(request, in_id):
         data_list = CommonMethods.objects.all()
         return render(request, "deploy/common_list.html", {"data_list": data_list})
 
+
 @login_required
 def common_run(request, in_id):
     if request.method == "GET":
-        comm=CommonMethods.objects.get(id=in_id)
+        comm = CommonMethods.objects.get(id=in_id)
         if comm.method == "playbook":
             uuidkey = uuid.uuid4()
             data = {'name': comm.model,
@@ -245,10 +249,10 @@ def common_run(request, in_id):
             inventoryList = Ansible_Inventory.objects.all()
             groupList = Groups.objects.all()
             if comm.model == "custom":
-                roles_list=[os.path.basename(f) for f in glob.glob('upload/playbook/roles/*') if os.path.isdir(f)]
+                roles_list = [os.path.basename(f) for f in glob.glob('upload/playbook/roles/*') if os.path.isdir(f)]
             return render(request, "deploy/playbook_run_online.html", locals())
-        elif comm.method == "model": # 调用模块执行页面
-            data = {"moudel":comm.model,"moudel_args":comm.vars}
+        elif comm.method == "model":  # 调用模块执行页面
+            data = {"moudel": comm.model, "moudel_args": comm.vars}
             form = MoudelForm(data=data)
             rediskey = uuid.uuid4()
             projectList = Projects.objects.all()
@@ -259,7 +263,7 @@ def common_run(request, in_id):
         elif comm.method == "scripts":
             uuidkey = uuid.uuid4()
             data = {'name': comm.model,
-                    'scripts_args': comm.vars,}
+                    'scripts_args': comm.vars, }
             with open(os.getcwd() + str(comm.filePath), 'r') as f:
                 contents = '\n'.join(i for i in f.readlines())
             form = ScriptsForm(data)
@@ -349,10 +353,9 @@ def inventory_add(request):
 @login_required
 def inventory_edit(request, in_id):
     inventory_data = Ansible_Inventory.objects.get(id=in_id)
-    group_data=None
+    group_data = None
     if inventory_data.inventory_group.all():
         group_data = inventory_data.inventory_group.all()[0]
-
 
     if request.method == "GET":
         inventory_form = InventoryForm(model_to_dict(inventory_data))
@@ -390,6 +393,7 @@ def inventory_edit(request, in_id):
             message = "新增成功"
             return render(request, "deploy/inventory_add.html", locals())
 
+
 @login_required
 def project_query(request, in_id):
     if request.method == "GET":
@@ -398,7 +402,7 @@ def project_query(request, in_id):
         service_assets = []
         for service in services:
             service_assets.append(model_to_dict(service))
-        return JsonResponse({'service_assets':service_assets})
+        return JsonResponse({'service_assets': service_assets})
 
 
 @login_required
@@ -406,7 +410,7 @@ def inventory_query(request, in_id):
     try:
         inventory = Ansible_Inventory.objects.get(id=in_id)
     except Ansible_Inventory.DoesNotExist:
-        return JsonResponse({'data':"没有找到数据"})
+        return JsonResponse({'data': "没有找到数据"})
     if request.method == "GET":
         source = {}
         for ds in inventory.inventory_group.all():
@@ -421,49 +425,52 @@ def inventory_query(request, in_id):
             if ds.ext_vars:
                 try:
                     source[ds.group]['vars'] = eval(ds.ext_vars)
-                except Exception, ex:
+                except Exception as ex:
                     source[ds.group]['vars'] = {}
                     # logger.warn(msg="获取资产组变量失败: {ex}".format(ex=ex))
         return JsonResponse({"code": 200, "msg": "success", "data": source})
 
+
 @login_required
 def assets_server_query(request):
     if request.method == "POST":
-        if request.POST.get('query') in ['service','project','group']:
+        if request.POST.get('query') in ['service', 'project', 'group']:
             dataList = []
             if request.POST.get('query') == 'service':
                 serv = Services.objects.get(id=request.POST.get('id')).service_name
                 for ser in Servers.objects.filter(service=serv):
                     try:
                         project = ser.project
-                    except Exception,ex:
+                    except Exception as ex:
                         project = '未知'
 
                     try:
                         service = ser.service
-                    except Exception,ex:
+                    except Exception as ex:
                         service = '未知'
 
-                    dataList.append({"id":ser.id,"ip":ser.ip,"project":project,"service":service})
+                    dataList.append({"id": ser.id, "ip": ser.ip, "project": project, "service": service})
 
             elif request.POST.get('query') == 'group':
                 group_name = Groups.objects.get(id=request.POST.get('id')).name
                 for ser in Servers.objects.filter(group=group_name):
                     try:
                         project = ser.project
-                    except Exception,ex:
+                    except Exception as ex:
                         project = '未知'
                     try:
                         service = ser.service
-                    except Exception,ex:
+                    except Exception as ex:
                         service = '未知'
 
-                    dataList.append({"id":ser.id,"ip":ser.ip,"project":project,"service":service})
+                    dataList.append({"id": ser.id, "ip": ser.ip, "project": project, "service": service})
 
-            return JsonResponse({'msg':"主机查询成功","code":200,'data':dataList})
-        else:JsonResponse({'msg':"不支持的操作","code":500,'data':[]})
+            return JsonResponse({'msg': "主机查询成功", "code": 200, 'data': dataList})
+        else:
+            JsonResponse({'msg': "不支持的操作", "code": 500, 'data': []})
     else:
-        return JsonResponse({'msg':"操作失败","code":500,'data':"不支持的操作"})
+        return JsonResponse({'msg': "操作失败", "code": 500, 'data': "不支持的操作"})
+
 
 @login_required
 def inventory_del(request, in_id):
@@ -515,7 +522,7 @@ def model_run(request):
                 sList, resource = AssetsSource().service(business=serv)
             elif request.POST.get('server_model') == 'inventory':
                 # sList, resource, groups = AssetsSource().inventory(inventory=request.POST.get('ansible_inventory'))
-                resource,sList=get_json_inentory(request.POST.get('ansible_inventory'),pw="get")
+                resource, sList = get_json_inentory(request.POST.get('ansible_inventory'), pw="get")
             if len(sList) > 0:
 
                 logId = Log_Ansible_Model.objects.create(
@@ -529,9 +536,9 @@ def model_run(request):
                                  "[Start] Ansible Model: {0}  ARGS:{1}".format(model, args))
 
                 if debug == 'on':
-                    ANS = ANSRunner(resource, redisKey, logId, verbosity=4)
+                    ANS = ANSRunner(hosts=resource, redisKey=redisKey, logId=logId, verbosity=4)
                 else:
-                    ANS = ANSRunner(resource, redisKey, logId)
+                    ANS = ANSRunner(hosts=resource, redisKey=redisKey, logId=logId,)
 
                 ANS.run_model(host_list=sList, module_name=model, module_args=args)
                 Redis_pool.lpush(redisKey, "[Done] Ansible Done.")
@@ -593,7 +600,8 @@ def scripts_add(request):
                 sList, resource = AssetsSource().service(business=serv)
             elif request.POST.get('server_model') == 'inventory':
                 # sList, resource, groups = AssetsSource().inventory(inventory=request.POST.get('ansible_inventory'))
-                resource,sList=get_json_inentory(request.POST.get('ansible_inventory'),pw="get")
+                resource, sList = get_json_inentory(request.POST.get('ansible_inventory'), pw="get")
+
             # if len(request.POST.get('custom_model')) > 0:
             #     model_name = request.POST.get('custom_model')
             # else:
@@ -622,18 +630,18 @@ def scripts_add(request):
                                  "[Start] Ansible Model: {model}  Script:{filePath} {args}".format(
                                      model='script', filePath=filePath, args=scripts_args))
                 if debug == 'on':
-                    ANS = ANSRunner(resource, redisKey, logId, verbosity=4)
+                    ANS = ANSRunner(hosts=resource, redisKey=redisKey, logId=logId, verbosity=4)
                 else:
-                    ANS = ANSRunner(resource, redisKey, logId)
+                    ANS = ANSRunner(hosts=resource, redisKey=redisKey, logId=logId,)
                 ANS.run_model(host_list=sList, module_name='script',
                               module_args="{filePath} {args}".format(filePath=filePath,
                                                                      args=scripts_args))
                 Redis_pool.lpush(redisKey, "[Done] Ansible Done.")
                 try:
                     os.remove(filePath)
-                except Exception, ex:
+                except Exception as ex:
                     # logger.warn(msg="删除文件失败: {ex}".format(ex=ex))
-                    print "删除文件失败: {ex}".format(ex=ex)
+                    print("删除文件失败: {ex}".format(ex=ex))
                 return JsonResponse({'msg': "操作成功", "code": 200, 'data': []})
             elif request.POST.get('type') == 'save':
                 fileName = '/upload/scripts/script-{ram}'.format(ram=uuid.uuid4().hex[0:8])
@@ -651,7 +659,7 @@ def scripts_add(request):
                         # script_service=service,
                         # script_type=request.POST.get('server_model')
                     )
-                except Exception, ex:
+                except Exception as ex:
                     # logger.warn(msg="添加ansible脚本失败: {ex}".format(ex=ex))
                     return JsonResponse({'msg': str(ex), "code": 500, 'data': []})
                 return JsonResponse({'msg': "保存成功", "code": 200, 'data': []})
@@ -758,7 +766,8 @@ def playbook_add(request):
                 sList, resource = AssetsSource().service(business=serv)
             elif request.POST.get('server_model') == 'inventory':
                 # sList, resource, groups = AssetsSource().inventory(inventory=request.POST.get('ansible_inventory'))
-                resource,sList=get_json_inentory(request.POST.get('ansible_inventory'),pw="get")
+                resource, sList = get_json_inentory(request.POST.get('ansible_inventory'), pw="get")
+
             def saveScript(content, filePath):
                 if os.path.isdir(os.path.dirname(filePath)) is not True:
                     os.makedirs(os.path.dirname(filePath))  # 判断文件存放的目录是否存在，不存在就创建
@@ -796,7 +805,7 @@ def playbook_add(request):
                         elif request.POST.get("playbook_file", None):
                             # 临时写入的playbook也放入同一个位置，方便roles调用
                             tempath = os.path.join(os.getcwd(), 'upload/playbook/playbook-{ram}'.format(
-                                                      ram=uuid.uuid4().hex[0:8]))
+                                ram=uuid.uuid4().hex[0:8]))
                             filePath = saveScript(content=request.POST.get('playbook_file'),
                                                   filePath=tempath)
 
@@ -807,9 +816,9 @@ def playbook_add(request):
                                                               ans_server=','.join(sList))
                         # 执行ansible playbook
                         if request.POST.get('ansible_debug') == 'on':
-                            ANS = ANSRunner(resource, redisKey=playbook_uuid, logId=logId, verbosity=4)
+                            ANS = ANSRunner(hosts=resource, redisKey=playbook_uuid, logId=logId, verbosity=4)
                         else:
-                            ANS = ANSRunner(resource, redisKey=playbook_uuid, logId=logId)
+                            ANS = ANSRunner(hosts=resource, redisKey=playbook_uuid, logId=logId)
                         if filePath:
                             ANS.run_playbook(host_list=sList, playbook_path=filePath,
                                              extra_vars=playbook_args)
@@ -890,7 +899,7 @@ def playbook_add(request):
                     Ansible_Playbook.objects.update_or_create(
                         playbook_name=name, defaults=defaults)
                     return JsonResponse({'msg': "保存成功", "code": 200, 'data': []})
-                except Exception, ex:
+                except Exception as ex:
                     # logger.warn(msg="添加ansible脚本失败: {ex}".format(ex=ex))
                     return JsonResponse({'msg': str(ex), "code": 500, 'data': []})
 
@@ -931,7 +940,7 @@ def ansible_log_view(request, s_id):
                 data.append(i.content)
         elif request.GET.get("m_p") == "playbook":
             data_list = Log_Ansible_Playbook.objects.get(id=s_id).ansible_playbook_log.all()
-            data=[]
+            data = []
             for i in data_list:
                 data.append(i.content)
         return JsonResponse({'data': data})
@@ -945,7 +954,6 @@ def ansible_log_del(request, s_id):
         elif request.GET.get("m_p") == "playbook":
             Log_Ansible_Playbook.objects.get(id=s_id).delete()
         return JsonResponse({'messages': '删除成功！'})
-
 
 
 @login_required()
@@ -972,7 +980,7 @@ def file_up(request):
             filePath = None
             if fileobj:
                 # fileName = os.path.join('/upload/myfile/upload', fileobj.name)
-                filePath = os.path.join(os.getcwd(), 'upload/myfile/upload',fileobj.name)
+                filePath = os.path.join(os.getcwd(), 'upload/myfile/upload', fileobj.name)
                 # if os.path.isdir(os.path.dirname(filename)) is not True:
                 if not os.path.exists(os.path.join(os.getcwd(), 'upload/myfile/upload')):
                     # print("dir not exists,make it")
@@ -985,8 +993,8 @@ def file_up(request):
                     print e
 
                 scripts_args = "src={} dest={} owner={} mode={} backup=yes".format(filePath,
-                                                                                  descpath,
-                                                                                   owner,permission )
+                                                                                   descpath,
+                                                                                   owner, permission)
                 redisKey = scripts_uuid
                 # logId = AnsibleRecord.Model.insert(user=str(request.user), ans_model='copy',
                 #                                    ans_server=','.join(sList), ans_args=filePath)
@@ -995,15 +1003,15 @@ def file_up(request):
                                  "[Start] Ansible Model: {model}  Script:{filePath} {args}".format(
                                      model='copy', filePath=filePath, args=scripts_args))
 
-                ANS = ANSRunner(resource, redisKey)
+                ANS = ANSRunner(hosts=resource, redisKey=redisKey)
 
                 ANS.run_model(host_list=sList, module_name='copy',
                               module_args=scripts_args)
                 Redis_pool.lpush(redisKey, "[Done] Ansible Done.")
                 try:
-                    LogFileOps.objects.create(opstype="up",filepath=descpath,server=str(sList),
-                                          content=content,
-                                          user=str(request.user.username),srcfile=fileobj.name)
+                    LogFileOps.objects.create(opstype="up", filepath=descpath, server=str(sList),
+                                              content=content,
+                                              user=str(request.user.username), srcfile=fileobj.name)
                 except Exception as e:
                     print(e)
                 return JsonResponse({'msg': "操作成功", "code": 200, 'data': []})
@@ -1012,6 +1020,8 @@ def file_up(request):
                 # print "操作失败，未选择主机或者该分组没有成员"
                 return JsonResponse({'msg': "操作失败，未选择主机或者该分组没有成员",
                                      "code": 500, 'data': []})
+
+
 @login_required()
 def file_find(request):
     if request.method == "POST":
@@ -1023,7 +1033,7 @@ def file_find(request):
             dataList = []
             resource, sList = get_json_inentory(inventory.id, pw="get")
             scripts_args = "path={}".format(descpath)
-            ANS = ANSRunner(resource)
+            ANS = ANSRunner(hosts=resource)
             ANS.run_model(host_list=sList, module_name='find',
                           module_args=scripts_args)
             filesData = json.loads(ANS.get_model_result())
@@ -1033,7 +1043,7 @@ def file_find(request):
                     # data["id"] = order.id
                     data['host'] = k
                     data['path'] = ds.get('path')
-                    data['size'] = round(float(ds.get('size'))/1024,2)
+                    data['size'] = round(float(ds.get('size')) / 1024, 2)
                     data['islnk'] = ds.get('islnk')
                     dataList.append(data)
             return JsonResponse({'msg': "操作成功", "code": 200, 'data': dataList})
@@ -1057,25 +1067,26 @@ def file_down(request):
         # print model,args,debug,inventory
         resource, sList = get_json_inentory(inventory, pw="get")
 
-        filePath = os.path.join(os.getcwd(),'upload/myfile/download')
+        filePath = os.path.join(os.getcwd(), 'upload/myfile/download')
         if not os.path.exists(filePath):
             # print("dir not exists,make it")
             os.makedirs(filePath)
 
-        scripts_args = "src={} dest={} fail_on_missing=yes".format(descpath,filePath,)
-        ANS = ANSRunner(resource)
+        scripts_args = "src={} dest={} fail_on_missing=yes".format(descpath, filePath, )
+        ANS = ANSRunner(hosts=resource)
         ANS.run_model(host_list=sList, module_name='fetch',
                       module_args=scripts_args)
         # 日志记录
         try:
-            LogFileOps.objects.create(opstype="down",filepath='/upload/myfile/download',
-                                      server=str(sList),content=content,
-                                      user=str(request.user.username),srcfile=descpath)
+            LogFileOps.objects.create(opstype="down", filepath='/upload/myfile/download',
+                                      server=str(sList), content=content,
+                                      user=str(request.user.username), srcfile=descpath)
         except Exception as e:
             print(e)
+
         # 文件读取迭代
-        def file_iterator(filepath,chunk_size=512):
-            with open(filepath,'rb') as f:
+        def file_iterator(filepath, chunk_size=512):
+            with open(filepath, 'rb') as f:
                 while True:
                     c = f.read(chunk_size)
                     if c:
@@ -1099,6 +1110,7 @@ def file_down(request):
             # print "操作失败，未选择主机或者该分组没有成员"
             return JsonResponse({'msg': "操作失败，未选择主机或者该分组没有成员",
                                  "code": 500, 'data': []})
+
 
 @login_required()
 def file_log(request):

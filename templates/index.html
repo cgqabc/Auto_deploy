@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {#{% load staticfiles %}#}
 {% block title %}
- <title> 仪表盘 </title>
+    <title> 欢迎页 </title>
 {% endblock %}
 
 {% block css-js %}
@@ -13,9 +13,159 @@
 
 
 {% block content %}
+    <!--Breadcrumb-->
+    <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+    <ol class="breadcrumb">
+        <li><a href="/">首页</a></li>
+        <li><a href="/deploy/">新增部署表</a></li>
+        <li class="active">欢迎页</li>
+    </ol>
+    <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+    <!--End breadcrumb-->
+    <div class="panel">
+        <div class="panel-heading">
 
 
- <h1 class="box-title">首页</h1>
+            <!--Page Title-->
+            <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+            <div id="page-title">
+                <h1 class="page-header text-overflow">欢迎使用自动部署系统</h1>
+
+            </div>
+        </div>
+        <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+        <!--End page title-->
+
+
+        {#                <!--Breadcrumb-->#}
+        {#                <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->#}
+        {#                <ol class="breadcrumb">#}
+        {#					<li><a href="#">首页</a></li>#}
+        {#					<li><a href="#">新增部署表格</a></li>#}
+        {#					<li class="active">欢迎页</li>#}
+        {#                </ol>#}
+        {#                <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->#}
+        {#                <!--End breadcrumb-->#}
+
+
+        <div class="panel-body">
+            <!--Page content-->
+            <!--===================================================-->
+            <div id="page-content">
+
+                <div class="row">
+                    <div class="col-md-3 mar-btm">
+
+                        <!-- Tips Widget -->
+                        <!--===================================================-->
+                        <h4><i class="demo-psi-idea-2 text-warning icon-fw"></i> 使用说明</h4>
+                        <p class="text-sm">参考以下步骤：</p>
+                        <div class="list-group bg-trans">
+                            <a class="list-group-item list-item-sm" href="#"><span
+                                    class="badge badge-purple badge-icon badge-fw pull-left"></span> 创建部署资源表</a>
+                            <a class="list-group-item list-item-sm" href="#"><span
+                                    class="badge badge-info badge-icon badge-fw pull-left"></span> 执行部署</a>
+                            <a class="list-group-item list-item-sm" href="#"><span
+                                    class="badge badge-pink badge-icon badge-fw pull-left"></span> 查看部署结果</a>
+                            <a class="list-group-item list-item-sm" href="#"><span
+                                    class="badge badge-success badge-icon badge-fw pull-left"></span> 其他功能</a>
+                        </div>
+                        <!--===================================================-->
+
+                        <hr class="new-section-sm bord-no">
+
+                        <!-- Contact us widget -->
+                        <!--===================================================-->
+
+                        <h4><i class="demo-pli-question-circle icon-fw"></i> 使用过程中有问题? </h4>
+                        <p class="text-sm">请查阅常见问题参考，或联系管理员。</p>
+                        <div class="pad-top">
+                            <a href="#" class="btn btn-primary">联系管理员</a>
+                        </div>
+                        <!--===================================================-->
+
+                    </div>
+                    <div class="col-md-9">
+                        <div class="panel">
+                            <div class="panel-body">
+
+                                <!-- GENERAL -->
+                                <!--===================================================-->
+                                <h4 class="mar-no pad-btm bord-btm"><i class="demo-pli-gear"></i> 常见问题</h4>
+                                <div id="demo-gen-faq" class="panel-group accordion">
+                                    <div class="pad-ver mar-ver">
+
+                                        <!-- Question -->
+                                        <a href="#demo-gen-faq1" class="text-semibold text-lg text-main"
+                                           data-toggle="collapse" data-parent="#demo-gen-faq">不能选择服务器?</a>
+
+
+                                        <!-- Answer -->
+                                        <div id="demo-gen-faq1" class="mar-ver collapse in">
+                                            请确认是否添加部署资源列表，或者添加动态资产列表
+                                        </div>
+                                    </div>
+                                    <div class="pad-ver mar-ver">
+
+                                        <!-- Question -->
+                                        <a href="#demo-gen-faq2" class="text-semibold text-lg text-main"
+                                           data-toggle="collapse" data-parent="#demo-gen-faq">如何创建新用户?</a>
+
+                                        <!-- Answer -->
+                                        <div id="demo-gen-faq2" class="mar-ver collapse in">
+                                            使用模块运行创建
+                                        </div>
+                                    </div>
+                                    <div class="pad-ver mar-ver">
+
+                                        <!-- Question -->
+                                        <a href="#demo-gen-faq3" class="text-semibold text-lg text-main"
+                                           data-toggle="collapse" data-parent="#demo-gen-faq">Sed diam nonummy nibh
+                                            euismod tincidunt ?</a>
+
+                                        <!-- Answer -->
+                                        <div id="demo-gen-faq3" class="mar-ver collapse in">
+                                            Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy
+                                            nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut
+                                            wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit
+                                            lobortis nisl ut aliquip ex ea commodo consequat.
+                                        </div>
+                                    </div>
+                                    <div class="pad-ver mar-ver">
+
+                                        <!-- Question -->
+                                        <a href="#demo-gen-faq4" class="text-semibold text-lg text-main"
+                                           data-toggle="collapse" data-parent="#demo-gen-faq">Tincidunt ut laoreet
+                                            dolore magna ?</a>
+
+
+                                        <!-- Answer -->
+                                        <div id="demo-gen-faq4" class="mar-ver collapse in">
+                                            Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy
+                                            nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut
+                                            wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit
+                                            lobortis nisl ut aliquip ex ea commodo consequat.
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--===================================================-->
+
+                                <hr class="new-section-md bord-no">
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+            <!--===================================================-->
+            <!--End page content-->
+
+        </div>
+    </div>
+
 
 
 

@@ -552,7 +552,6 @@ class ANSRunner(object):
         self.variable_manager.extra_vars = load_extra_vars(loader=self.loader, options=self.options)
         self.variable_manager.options_vars = load_options_vars(self.options, "")
         self.passwords = passwords or {}
-
     def run_model(self, host_list, module_name, module_args):
         if self.redisKey or self.logId:
             self.callback = ModelResultsCollectorToSave(self.redisKey, self.logId)

@@ -675,6 +675,11 @@ def scripts_run(request, s_id):
     if request.method == "GET":
         scripts = Ansible_Script.objects.get(id=s_id)
         uuidkey = scripts.script_uuid
+        projectList = Projects.objects.all()
+        serverList = AssetsSource().serverList()
+        inventoryList = Ansible_Inventory.objects.all()
+        groupList = Groups.objects.all()
+        serviceList = Services.objects.all()
         data = {'name': scripts.script_name,
                 'inventory': scripts.script_group,
                 'scripts_args': scripts.script_args,
@@ -961,6 +966,11 @@ def file_up(request):
     if request.method == "GET":
         form = FileUpForm()
         uuidkey = uuid.uuid4()
+        projectList = Projects.objects.all()
+        serverList = AssetsSource().serverList()
+        inventoryList = Ansible_Inventory.objects.all()
+        groupList = Groups.objects.all()
+        serviceList = Services.objects.all()
         return render(request, "deploy/file_up.html", locals())
     elif request.method == "POST":
         scripts_uuid = request.POST.get('uuidkey')
@@ -970,11 +980,25 @@ def file_up(request):
             descpath = form.cleaned_data['filepath']
             permission = form.cleaned_data['permission']
             owner = form.cleaned_data['owner']
-            inventory = form.cleaned_data['inventory']
+            # inventory = form.cleaned_data['inventory']
             content = form.cleaned_data['content']
             # print model,args,debug,inventory
-            resource, sList = get_json_inentory(inventory.id, pw="get")
+            # resource, sList = get_json_inentory(inventory.id, pw="get")
+            resource = []
+            sList = []
 
+            if request.POST.get('server_model') == 'custom':
+                serverList = request.POST.getlist('ansible_server')
+                sList, resource = AssetsSource().custom(serverList)
+            elif request.POST.get('server_model') == 'group':
+                group_name = Groups.objects.get(id=request.POST.get('script_auth_group')).name
+                sList, resource = AssetsSource().group(group=group_name)
+            elif request.POST.get('server_model') == 'service':
+                serv = Services.objects.get(id=request.POST.get('ansible_service')).service_name
+                sList, resource = AssetsSource().service(business=serv)
+            elif request.POST.get('server_model') == 'inventory':
+                # sList, resource, groups = AssetsSource().inventory(inventory=request.POST.get('ansible_inventory'))
+                resource, sList = get_json_inentory(request.POST.get('ansible_inventory'), pw="get")
             fileobj = request.FILES.get("file_upload", None)
             # fileName = None
             filePath = None
@@ -990,7 +1014,7 @@ def file_up(request):
                         for chunk in fileobj.chunks():
                             f.write(chunk)
                 except Exception as e:
-                    print e
+                    print(e)
 
                 scripts_args = "src={} dest={} owner={} mode={} backup=yes".format(filePath,
                                                                                    descpath,
@@ -1029,9 +1053,24 @@ def file_find(request):
 
         if form.is_valid():
             descpath = form.cleaned_data['filepath']
-            inventory = form.cleaned_data['inventory']
+            # inventory = form.cleaned_data['inventory']
             dataList = []
-            resource, sList = get_json_inentory(inventory.id, pw="get")
+            # resource, sList = get_json_inentory(inventory.id, pw="get")
+            resource = []
+            sList = []
+
+            if request.POST.get('server_model') == 'custom':
+                serverList = request.POST.getlist('ansible_server')
+                sList, resource = AssetsSource().custom(serverList)
+            elif request.POST.get('server_model') == 'group':
+                group_name = Groups.objects.get(id=request.POST.get('script_auth_group')).name
+                sList, resource = AssetsSource().group(group=group_name)
+            elif request.POST.get('server_model') == 'service':
+                serv = Services.objects.get(id=request.POST.get('ansible_service')).service_name
+                sList, resource = AssetsSource().service(business=serv)
+            elif request.POST.get('server_model') == 'inventory':
+                # sList, resource, groups = AssetsSource().inventory(inventory=request.POST.get('ansible_inventory'))
+                resource, sList = get_json_inentory(request.POST.get('ansible_inventory'), pw="get")
             scripts_args = "path={}".format(descpath)
             ANS = ANSRunner(hosts=resource)
             ANS.run_model(host_list=sList, module_name='find',
@@ -1056,17 +1095,25 @@ def file_down(request):
     if request.method == "GET":
         form = FileDownForm()
         uuidkey = uuid.uuid4()
+        projectList = Projects.objects.all()
+        serverList = AssetsSource().serverList()
+        inventoryList = Ansible_Inventory.objects.all()
+        groupList = Groups.objects.all()
+        serviceList = Services.objects.all()
         return render(request, "deploy/file_down.html", locals())
 
 
     elif request.method == "POST":
 
         descpath = request.POST.get('path')
-        inventory = request.POST.get('inventory')
+        # inventory = request.POST.get('inventory')
         content = request.POST.get('content')
         # print model,args,debug,inventory
-        resource, sList = get_json_inentory(inventory, pw="get")
+        # resource, sList = get_json_inentory(inventory, pw="get")
+        resource = []
+        sList = []
 
+        sList, resource = AssetsSource().queryAssetsByIp(ipList=request.POST.getlist('dest_server'))
         filePath = os.path.join(os.getcwd(), 'upload/myfile/download')
         if not os.path.exists(filePath):
             # print("dir not exists,make it")

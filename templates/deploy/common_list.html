@@ -28,6 +28,15 @@
 
 
 {% block content %}
+        <!--Breadcrumb-->
+    <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+    <ol class="breadcrumb">
+        <li><a href="/">首页</a></li>
+        <li><a href="/deploy/">应用部署</a></li>
+        <li class="active">常用功能</li>
+    </ol>
+    <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+    <!--End breadcrumb-->
 {% if message %}
                   <div class="alert alert-warning">{{ message }}</div>
               {% endif %}

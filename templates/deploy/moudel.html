@@ -64,73 +64,73 @@
                                 </select>
                             </div>
                         </div>
-                            <div id='project_server' style="display:none;">
-                                <div class="form-group">
-                                    <label class="col-ms-10 control-label"
-                                           style="margin-left: 10px;">所属产品线</label>
-                                    <div class="col-ms-10" style="margin-left: 10px;">
-                                        <select class="form-control" name="ansible_project" id="ansible_project"
-                                                onchange="javascript:oBtProjectSelect();" required>
-                                            <option name="project" value="" selected="selected">请选择一个产品线</option>
-                                            {% for ds in projectList %}
-                                                <option name="project" value="{{ ds.id }}">{{ ds.name }}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-ms-10 control-label"
-                                           style="margin-left: 10px;">业务类型</label>
-                                    <div class="col-ms-10" style="margin-left: 10px;">
-                                        <select class="form-control" name="ansible_service" id="ansible_service"
-                                                onchange="javascript:oBtServiceSelect('service','ansible_service');"
-                                                required>
-                                            <option name="service" value="">选择一个业务类型</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="inventory_server" class="form-group" style="display:none;">
+                        <div id='project_server' style="display:none;">
+                            <div class="form-group">
                                 <label class="col-ms-10 control-label"
-                                       style="margin-left: 10px;">动态主机组<i class="fa fa-info-circle"
-                                                                          data-toggle="tooltip"
-                                                                          title="根据动态资产添加选择服务器"></i></label>
+                                       style="margin-left: 10px;">所属产品线</label>
                                 <div class="col-ms-10" style="margin-left: 10px;">
-                                    <select class="form-control" name="ansible_inventory" id="ansible_inventory"
-                                            onchange="javascript:oBtInventorySelect(this);">
-                                        <option name="ansible_inventory" value="">选择一个业务类型</option>
-                                        {% for ds in inventoryList %}
-                                            <option name="ansible_inventory" value="{{ ds.id }}">{{ ds.name }}</option>
+                                    <select class="form-control" name="ansible_project" id="ansible_project"
+                                            onchange="javascript:oBtProjectSelect();" required>
+                                        <option name="project" value="" selected="selected">请选择一个产品线</option>
+                                        {% for ds in projectList %}
+                                            <option name="project" value="{{ ds.id }}">{{ ds.name }}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
                             </div>
-                            <div id="group_server" class="form-group" style="display:none;">
+                            <div class="form-group">
                                 <label class="col-ms-10 control-label"
-                                       style="margin-left: 10px;">使用部门</label>
+                                       style="margin-left: 10px;">业务类型</label>
                                 <div class="col-ms-10" style="margin-left: 10px;">
-                                    <select class="form-control" name="script_auth_group" id="script_auth_group"
-                                            onchange="javascript:oBtServiceSelect('group','script_auth_group');"
+                                    <select class="form-control" name="ansible_service" id="ansible_service"
+                                            onchange="javascript:oBtServiceSelect('service','ansible_service');"
                                             required>
-                                        <option name="script_auth_group" value="0" selected="selected">请选择使用组</option>
-                                        {% for ds in groupList %}
-                                            <option name="script_auth_group" value="{{ ds.id }}">{{ ds.name }}</option>
-                                        {% endfor %}
+                                        <option name="service" value="">选择一个业务类型</option>
                                     </select>
                                 </div>
                             </div>
-                            <div id="custom_server" class="form-group" style="display:none;">
-                                <label class="col-ms-10 control-label"
-                                       style="margin-left: 10px;">服务器选择</label>
-                                <div class="col-ms-10" style="margin-left: 10px;">
-                                    <select multiple name="ansible_server" id="ansible_server" required>
-                                        {% for ds in serverList %}
-                                            <option name="server" value="{{ ds.id }}">{{ ds.ip }} | {{ ds.project }}
-                                                | {{ ds.service }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
+                        </div>
+                        <div id="inventory_server" class="form-group" style="display:none;">
+                            <label class="col-ms-10 control-label"
+                                   style="margin-left: 10px;">动态主机组<i class="fa fa-info-circle"
+                                                                      data-toggle="tooltip"
+                                                                      title="根据动态资产添加选择服务器"></i></label>
+                            <div class="col-ms-10" style="margin-left: 10px;">
+                                <select class="form-control" name="ansible_inventory" id="ansible_inventory"
+                                        onchange="javascript:oBtInventorySelect(this);">
+                                    <option name="ansible_inventory" value="">选择一个业务类型</option>
+                                    {% for ds in inventoryList %}
+                                        <option name="ansible_inventory" value="{{ ds.id }}">{{ ds.name }}</option>
+                                    {% endfor %}
+                                </select>
                             </div>
+                        </div>
+                        <div id="group_server" class="form-group" style="display:none;">
+                            <label class="col-ms-10 control-label"
+                                   style="margin-left: 10px;">使用部门</label>
+                            <div class="col-ms-10" style="margin-left: 10px;">
+                                <select class="form-control" name="script_auth_group" id="script_auth_group"
+                                        onchange="javascript:oBtServiceSelect('group','script_auth_group');"
+                                        required>
+                                    <option name="script_auth_group" value="0" selected="selected">请选择使用组</option>
+                                    {% for ds in groupList %}
+                                        <option name="script_auth_group" value="{{ ds.id }}">{{ ds.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div id="custom_server" class="form-group" style="display:none;">
+                            <label class="col-ms-10 control-label"
+                                   style="margin-left: 10px;">服务器选择</label>
+                            <div class="col-ms-10" style="margin-left: 10px;">
+                                <select multiple name="ansible_server" id="ansible_server" required>
+                                    {% for ds in serverList %}
+                                        <option name="server" value="{{ ds.id }}">{{ ds.ip }} | {{ ds.project }}
+                                            | {{ ds.service }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
 
                         {% for item in form %}
                             <div class="form-group">
@@ -164,14 +164,15 @@
 
                         </form>
                     </div>
-                    <div class="col-lg-8">
-                        <legend><i class="fa  fa-paper-plane-o"></i> 执行结果</legend>
-                        <pre class="html">
+                </div>
+                <div class="col-lg-8">
+                    <legend><i class="fa  fa-paper-plane-o"></i> 执行结果</legend>
+                    <pre class="html">
                                         <div id="result"></div>
 				                    </pre>
 
-                    </div>
                 </div>
+
             </div>
         </div>
         <div style="visibility:hidden"><a id="scrollToTop"></a></div>
